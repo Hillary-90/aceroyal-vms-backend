@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ACEROYAL ESTATES – Visitor Management System PRO</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+<style>
+:root{--p:#B22222}
+body{background:#f4f5f7;font-family:system-ui,"Segoe UI",Arial,sans-serif;margin:0}
+.btn-p{background:var(--p);border-color:var(--p);color:#fff}.btn-p:hover{background:#8f1b1b;color:#fff}
+.text-p{color:var(--p)}
+.logo{display:flex;align-items:center;gap:.65rem;color:#fff;font-weight:700;letter-spacing:.5px}
+.logo b{background:var(--p);color:#fff;width:40px;height:40px;display:grid;place-items:center;border-radius:6px;font-size:1.5rem}
+#login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#121212 0%,#3a0d0d 50%,#B22222 100%);padding:1rem}
+.lbox{background:#fff;border-radius:10px;padding:2rem;width:100%;max-width:410px;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.lbox .logo{color:#121212;margin-bottom:.4rem}
+.side{width:240px;background:#121212;position:fixed;top:0;bottom:0;display:flex;flex-direction:column;overflow-y:auto}
+.side .logo{padding:1.2rem}.side small{display:block;padding:0 1.2rem 1rem;color:#888;border-bottom:1px solid #2a2a2a;font-style:italic}
+.side a{display:block;padding:.75rem 1.2rem;color:#bbb;text-decoration:none;cursor:pointer;border-left:3px solid transparent}
+.side a:hover,.side a.active{background:#1f1f1f;color:#fff;border-left-color:var(--p)}
+.side a i{width:1.5rem}.main{margin-left:240px;padding:1.5rem}
+.stat{background:#fff;border-radius:8px;padding:1rem 1.2rem;border-left:5px solid var(--p);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.stat h3{margin:0;font-weight:700}.stat span{color:#666}
+.card{border:0;box-shadow:0 1px 3px rgba(0,0,0,.08)}.page{display:none}.page.on{display:block}
+.bcard{width:300px;border:2px solid var(--p);border-radius:8px;overflow:hidden;background:#fff;text-align:center}
+.bcard .hd{background:var(--p);color:#fff;padding:.6rem}.bcard .hd .logo{justify-content:center}.bcard .hd .logo b{background:#fff;color:var(--p);width:28px;height:28px;font-size:1rem}
+.bcard img{width:110px;height:110px;object-fit:cover;border-radius:6px;border:2px solid #ddd;margin:.8rem 0 .3rem;background:#eee}
+.bcard .bd{padding:0 1rem 1rem}.bcard h5{margin:.2rem 0}.bcard p{margin:0;font-size:.85rem;color:#444}.bcard .ft{background:#121212;color:#fff;font-size:.7rem;padding:.3rem}
+@media(max-width:768px){.side{position:static;width:100%}.main{margin:0;padding:1rem}}
+@media print{.side,.no-print{display:none!important}.main{margin:0;padding:0}body.pb *{visibility:hidden}body.pb #badgeBox,body.pb #badgeBox *{visibility:visible}body.pb #badgeBox{position:absolute;left:0;top:0}}
+</style></head><body>
+
+<div id="login"><div class="lbox">
+ <div class="logo"><b>A</b><span id="lgName">ACEROYAL ESTATES</span></div>
+ <p class="text-muted fst-italic mb-3">Building the future together...</p>
+ <h5>Visitor Management System PRO</h5>
+ <div id="lErr" class="alert alert-danger py-2 d-none"></div>
+ <input id="lEmail" class="form-control mb-2" type="email" placeholder="Email" autocomplete="username">
+ <input id="lPass" class="form-control mb-3" type="password" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+ <button class="btn btn-p w-100" onclick="doLogin()"><i class="fa fa-lock-open me-1"></i> Sign in</button>
+ <div class="small text-muted mt-3"><b>Demo accounts</b><br>hr@aceroyalestates.com / admin123<br>hillary@aceroyalestates.com / aceroyal123<br>maryade@aceroyalestates.com / mary123<br>coo@aceroyalestates.com / coo123</div>
+</div></div>
+
+<div id="app" class="d-none">
+<nav class="side">
+ <div class="logo"><b>A</b><span class="coName">ACEROYAL ESTATES</span></div><small>Building the future together...</small>
+ <a data-p="dash" onclick="showPage('dash')"><i class="fa fa-gauge"></i>Dashboard</a>
+ <a data-p="checkin" onclick="showPage('checkin')"><i class="fa fa-right-to-bracket"></i>Check-In</a>
+ <a data-p="checkout" onclick="showPage('checkout')"><i class="fa fa-right-from-bracket"></i>Check-Out</a>
+ <a data-p="all" onclick="showPage('all')"><i class="fa fa-users"></i>All Visitors</a>
+ <a data-p="reports" onclick="showPage('reports')"><i class="fa fa-file-export"></i>Reports &amp; Export</a>
+ <a data-p="users" class="adm" onclick="showPage('users')"><i class="fa fa-user-gear"></i>Users &amp; Hosts</a>
+ <a data-p="settings" class="adm" onclick="showPage('settings')"><i class="fa fa-gear"></i>Settings</a>
+ <a onclick="doLogout()" class="mt-auto"><i class="fa fa-power-off"></i>Logout <span id="meName" class="small text-secondary"></span></a>
+</nav>
+<main class="main">
+
+<section id="p-dash" class="page"><h4 class="mb-3">Dashboard</h4>
+ <div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3"><div class="stat"><h3 id="sToday">0</h3><span>Today</span></div></div>
+  <div class="col-6 col-lg-3"><div class="stat"><h3 id="sInside">0</h3><span>Inside Now</span></div></div>
+  <div class="col-6 col-lg-3"><div class="stat"><h3 id="sOut">0</h3><span>Checked Out</span></div></div>
+  <div class="col-6 col-lg-3"><div class="stat"><h3 id="sTotal">0</h3><span>Total</span></div></div></div>
+ <div class="card"><div class="card-header bg-white fw-bold">Visitors inside now</div><div class="table-responsive"><table class="table table-hover mb-0 align-middle">
+  <thead><tr><th>Name</th><th>Company</th><th>Host</th><th>Purpose</th><th>Time in</th><th></th></tr></thead><tbody id="dashBody"></tbody></table></div></div></section>
+
+<section id="p-checkin" class="page"><h4 class="mb-3">Visitor Check-In</h4>
+ <div class="row g-4"><div class="col-lg-7"><div class="card"><div class="card-body">
+ <form id="ciForm" onsubmit="submitCheckIn(event)" oninput="liveBadge()"><div class="row g-2">
+  <div class="col-md-6"><label class="form-label">Full name *</label><input id="name" class="form-control" required></div>
+  <div class="col-md-6"><label class="form-label">Company</label><input id="company" class="form-control"></div>
+  <div class="col-md-6"><label class="form-label">Phone *</label><input id="phone" class="form-control" required></div>
+  <div class="col-md-6"><label class="form-label">Email</label><input id="email" type="email" class="form-control"></div>
+  <div class="col-md-5"><label class="form-label">ID type</label><select id="idType" class="form-select"><option>National ID</option><option>Driver's Licence</option><option>Passport</option><option>Voter's Card</option><option>Company ID</option></select></div>
+  <div class="col-md-7"><label class="form-label">ID number</label><input id="idNo" class="form-control"></div>
+  <div class="col-md-6"><label class="form-label">Host *</label><select id="host" class="form-select" required onchange="autoFillHostEmail()"></select></div>
+  <div class="col-md-6"><label class="form-label">Host email *</label><input id="hostEmail" type="email" class="form-control" required></div>
+  <div class="col-12"><label class="form-label">Purpose of visit *</label><input id="purpose" class="form-control" required></div>
+  <div class="col-12"><label class="form-label">Photo</label><input type="file" accept="image/*" capture="user" class="form-control" onchange="onPhoto(this)"></div>
+ </div><button class="btn btn-p mt-3"><i class="fa fa-check me-1"></i> Check in visitor</button></form></div></div></div>
+ <div class="col-lg-5"><div id="badgeBox" class="bcard mx-auto">
+   <div class="hd"><div class="logo"><b>A</b><span class="coName">ACEROYAL ESTATES</span></div></div>
+   <div class="bd"><img id="bPhoto" alt="Visitor photo"><h5 id="bName">Visitor name</h5><p id="bCo">Company</p><p>Host: <b id="bHost">—</b></p><p id="bTime"></p><p>ID: <span id="bId">—</span></p></div>
+   <div class="ft">VISITOR · Building the future together...</div></div>
+  <div class="text-center mt-3 no-print"><button class="btn btn-dark" onclick="printBadge()"><i class="fa fa-print me-1"></i> Print badge</button></div>
+  <ul class="list-unstyled small mt-3 no-print"><li><i class="fa fa-table me-1"></i>Google Sheet: <span id="sheetStat" class="text-muted">Waiting</span></li><li><i class="fa fa-envelope me-1"></i>Email: <span id="emailStat" class="text-muted">Waiting</span></li></ul></div></div></section>
+
+<section id="p-checkout" class="page"><h4 class="mb-3">Check-Out</h4>
+ <input id="coSearch" class="form-control mb-3" placeholder="Search name, company, host or phone" oninput="renderTables()">
+ <div class="card"><div class="table-responsive"><table class="table table-hover mb-0 align-middle"><thead><tr><th>Name</th><th>Company</th><th>Host</th><th>Purpose</th><th>Time in</th><th></th></tr></thead><tbody id="coBody"></tbody></table></div></div></section>
+
+<section id="p-all" class="page"><h4 class="mb-3">All Visitors</h4>
+ <div class="row g-2 mb-3"><div class="col-md-4"><input id="fText" class="form-control" placeholder="Filter by visitor or host" oninput="renderTables()"></div>
+  <div class="col-md-3"><select id="fStatus" class="form-select" onchange="renderTables()"><option value="">All statuses</option><option>Checked In</option><option>Checked Out</option></select></div>
+  <div class="col-md-5 text-md-end"><button class="btn btn-outline-dark btn-sm" onclick="exportCSV()"><i class="fa fa-file-csv"></i> CSV</button>
+   <button class="btn btn-outline-success btn-sm" onclick="exportExcel()"><i class="fa fa-file-excel"></i> Excel</button>
+   <button class="btn btn-outline-danger btn-sm" onclick="exportPDF()"><i class="fa fa-file-pdf"></i> PDF</button>
+   <button class="btn btn-p btn-sm" onclick="syncToGoogleSheet()"><i class="fa fa-rotate"></i> Sync to Sheet</button></div></div>
+ <div class="card"><div class="table-responsive"><table class="table table-hover mb-0 align-middle"><thead><tr><th>Name</th><th>Company</th><th>Phone</th><th>Host</th><th>In</th><th>Out</th><th>Status</th><th class="no-print"></th></tr></thead><tbody id="allBody"></tbody></table></div></div></section>
+
+<section id="p-reports" class="page"><h4 class="mb-3">Reports &amp; Export</h4>
+ <div class="card mb-3"><div class="card-body row g-2 align-items-end">
+  <div class="col-md-3"><label class="form-label">From</label><input id="rFrom" type="date" class="form-control"></div>
+  <div class="col-md-3"><label class="form-label">To</label><input id="rTo" type="date" class="form-control"></div>
+  <div class="col-md-3"><label class="form-label">Host</label><select id="rHost" class="form-select"></select></div>
+  <div class="col-md-3"><button class="btn btn-p" onclick="generateReport()">Generate</button>
+   <button class="btn btn-outline-dark" onclick="exportCSV(repRows,'report')">CSV</button> <button class="btn btn-outline-danger" onclick="exportPDF()">PDF</button></div></div></div>
+ <div class="card"><div class="card-header bg-white fw-bold" id="repTitle">Report</div><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Name</th><th>Company</th><th>Host</th><th>Purpose</th><th>In</th><th>Out</th><th>Status</th></tr></thead><tbody id="repBody"></tbody></table></div></div></section>
+
+<section id="p-users" class="page"><h4 class="mb-3">Users &amp; Hosts</h4>
+ <div class="card mb-3"><div class="card-body row g-2 align-items-end">
+  <div class="col-md-3"><label class="form-label">Name</label><input id="uName" class="form-control"></div>
+  <div class="col-md-3"><label class="form-label">Department</label><input id="uDept" class="form-control"></div>
+  <div class="col-md-3"><label class="form-label">Email</label><input id="uEmail" type="email" class="form-control"></div>
+  <div class="col-md-2"><label class="form-label">Role</label><select id="uRole" class="form-select"><option>Host</option><option>Front Desk</option><option>Admin</option><option>HR</option></select></div>
+  <div class="col-md-1"><button class="btn btn-p w-100" onclick="addUser()">Add</button></div></div></div>
+ <div class="card"><div class="table-responsive"><table class="table mb-0 align-middle"><thead><tr><th>Name</th><th>Department</th><th>Email</th><th>Role</th><th></th></tr></thead><tbody id="userBody"></tbody></table></div></div>
+ <p class="small text-muted mt-2">New users sign in with the temporary password <code>welcome123</code>.</p></section>
+
+<section id="p-settings" class="page"><h4 class="mb-3">Settings</h4><div class="row g-3">
+ <div class="col-lg-6"><div class="card"><div class="card-body"><h6>Company</h6>
+  <label class="form-label">Company name</label><input id="s_company" class="form-control mb-2">
+  <label class="form-label">Front desk email</label><input id="s_frontEmail" type="email" class="form-control mb-2">
+  <label class="form-label">Brand colour</label><input id="s_color" type="color" class="form-control form-control-color"></div></div></div>
+ <div class="col-lg-6"><div class="card"><div class="card-body"><h6>Email</h6>
+  <label class="form-label">Mode</label><select id="s_mode" class="form-select mb-2"><option value="simulate">Simulate (mailto only)</option><option value="backend">Backend only</option><option value="both">Both</option></select>
+  <div class="row g-2"><div class="col-6"><input id="s_smtpHost" class="form-control" placeholder="SMTP host"></div><div class="col-6"><input id="s_smtpEmail" class="form-control" placeholder="SMTP email"></div>
+  <div class="col-12"><input id="s_smtpPass" type="password" class="form-control" placeholder="SMTP password"></div>
+  <div class="col-12"><input id="s_backendUrl" class="form-control" placeholder="Backend URL e.g. https://aceroyal-vms.onrender.com"></div></div>
+  <div class="form-text">SMTP details are kept for reference only. The backend reads its own credentials from environment variables, so they are never sent from the browser.</div>
+  <button class="btn btn-outline-dark btn-sm mt-2" onclick="testEmail()">Send test email</button> <span id="testStat" class="small"></span></div></div></div>
+ <div class="col-lg-6"><div class="card"><div class="card-body"><h6>Google Sheet</h6>
+  <input id="s_sheetUrl" class="form-control mb-2" placeholder="Apps Script web app URL (ends in /exec)">
+  <select id="s_autoSync" class="form-select mb-2"><option value="no">Auto sync: No</option><option value="yes">Auto sync: Yes</option></select>
+  <button class="btn btn-outline-dark btn-sm" onclick="syncToGoogleSheet()">Sync now</button> <button class="btn btn-outline-dark btn-sm" onclick="testSheet()">Test</button> <span id="sheetTest" class="small"></span></div></div></div>
+ <div class="col-lg-6"><div class="card"><div class="card-body"><h6>Data management</h6>
+  <button class="btn btn-outline-dark btn-sm" onclick="exportBackup()"><i class="fa fa-download"></i> Backup JSON</button>
+  <button class="btn btn-outline-danger btn-sm" onclick="clearAllData()"><i class="fa fa-trash"></i> Clear all visitors</button></div></div></div>
+ <div class="col-12"><div class="card"><div class="card-body"><h6>Hosting guide</h6><ol class="small mb-0">
+  <li><b>App (Netlify):</b> drag ACEROYAL_VMS_PRO.html, renamed index.html, into app.netlify.com/drop.</li>
+  <li><b>Backend (Render):</b> push backend_app.py and requirements.txt to GitHub, create a Web Service, start command <code>gunicorn backend_app:app</code>, then set the SMTP_* environment variables.</li>
+  <li>Paste the Render URL into Backend URL above, and the Apps Script /exec URL into Google Sheet.</li></ol></div></div></div>
+ </div><button class="btn btn-p mt-3" onclick="saveSettings()"><i class="fa fa-floppy-disk me-1"></i> Save settings</button> <span id="saveStat" class="small text-success"></span></section>
+</main></div>
+
+<script>
+const $=i=>document.getElementById(i),K={v:'aceroyal_vms_pro',u:'aceroyal_users',s:'aceroyal_settings'};
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=t=>t?new Date(t).toLocaleString('en-NG',{dateStyle:'medium',timeStyle:'short'}):'—';
+const DU=[{name:'HR Department',dept:'Human Resources',email:'hr@aceroyalestates.com',role:'HR',pw:'admin123'},{name:'Jideofor Hillary',dept:'IT Support',email:'hillary@aceroyalestates.com',role:'Admin',pw:'aceroyal123'},{name:'Mary Ade',dept:'Front Desk',email:'maryade@aceroyalestates.com',role:'Front Desk',pw:'mary123'},{name:'Chief Operating Officer',dept:'Executive',email:'coo@aceroyalestates.com',role:'Host',pw:'coo123'}];
+const DS={company:'ACEROYAL ESTATES',frontEmail:'hillary@aceroyalestates.com',color:'#B22222',mode:'simulate',smtpHost:'',smtpEmail:'',smtpPass:'',backendUrl:'',sheetUrl:'',autoSync:'no'};
+let visitors=ld(K.v,[]),users=ld(K.u,DU),settings={...DS,...ld(K.s,{})},me=ld('aceroyal_session',null),photo='',repRows=[];
+const setStat=(id,cls,t)=>{const e=$(id);e.className='text-'+cls;e.textContent=t};
+
+function saveAll(){localStorage.setItem(K.v,JSON.stringify(visitors));localStorage.setItem(K.u,JSON.stringify(users));localStorage.setItem(K.s,JSON.stringify(settings))}
+function applyBrand(){document.documentElement.style.setProperty('--p',settings.color);document.querySelectorAll('.coName').forEach(e=>e.textContent=settings.company);$('lgName').textContent=settings.company}
+function doLogin(){const e=$('lEmail').value.trim().toLowerCase(),p=$('lPass').value;
+ const u=users.find(x=>x.email.toLowerCase()===e&&x.pw===p);
+ if(!u){$('lErr').textContent='Email or password is incorrect.';$('lErr').classList.remove('d-none');return}
+ me=u;localStorage.setItem('aceroyal_session',JSON.stringify(u));startApp()}
+function doLogout(){localStorage.removeItem('aceroyal_session');me=null;$('app').classList.add('d-none');$('login').style.display='grid';$('lPass').value=''}
+function startApp(){$('login').style.display='none';$('app').classList.remove('d-none');$('meName').textContent='('+me.name.split(' ')[0]+')';
+ const adm=['Admin','HR'].includes(me.role);document.querySelectorAll('.adm').forEach(a=>a.style.display=adm?'':'none');
+ populateHosts();loadSettings();showPage('dash')}
+function showPage(p){document.querySelectorAll('.page').forEach(s=>s.classList.toggle('on',s.id==='p-'+p));
+ document.querySelectorAll('.side a[data-p]').forEach(a=>a.classList.toggle('active',a.dataset.p===p));
+ if(p==='users')renderUsers();if(p==='reports')generateReport();renderAll()}
+function populateHosts(){const o=users.map(u=>`<option value="${esc(u.email)}">${esc(u.name)}${u.dept?' – '+esc(u.dept):''}</option>`).join('');
+ $('host').innerHTML='<option value="">Select host…</option>'+o;$('rHost').innerHTML='<option value="">All hosts</option>'+o}
+function autoFillHostEmail(){$('hostEmail').value=$('host').value;liveBadge()}
+const hostName=()=>{const s=$('host');return s.value?s.options[s.selectedIndex].text.split(' – ')[0]:''};
+
+function updateStats(){const t=new Date().toDateString();
+ $('sToday').textContent=visitors.filter(v=>new Date(v.checkIn).toDateString()===t).length;
+ $('sInside').textContent=visitors.filter(v=>v.status==='Checked In').length;
+ $('sOut').textContent=visitors.filter(v=>v.status==='Checked Out').length;$('sTotal').textContent=visitors.length}
+const empty=n=>`<tr><td colspan="${n}" class="text-center text-muted py-4">No visitors to show.</td></tr>`;
+const badge=v=>`<span class="badge ${v.status==='Checked In'?'bg-success':'bg-secondary'}">${v.status}</span>`;
+function renderTables(){const ins=visitors.filter(v=>v.status==='Checked In');
+ const co=v=>`<button class="btn btn-sm btn-outline-danger" onclick="checkOutVisitor('${v.id}')"><i class="fa fa-right-from-bracket"></i> Check out</button>`;
+ const r=v=>`<td>${esc(v.name)}</td><td>${esc(v.company)}</td><td>${esc(v.host)}</td><td>${esc(v.purpose)}</td><td>${fmt(v.checkIn)}</td><td>${co(v)}</td>`;
+ $('dashBody').innerHTML=ins.map(v=>`<tr>${r(v)}</tr>`).join('')||empty(6);
+ const q=$('coSearch').value.toLowerCase();
+ $('coBody').innerHTML=ins.filter(v=>[v.name,v.company,v.host,v.phone].join(' ').toLowerCase().includes(q)).map(v=>`<tr>${r(v)}</tr>`).join('')||empty(6);
+ const f=$('fText').value.toLowerCase(),s=$('fStatus').value;
+ $('allBody').innerHTML=visitors.filter(v=>(v.name+' '+v.host).toLowerCase().includes(f)&&(!s||v.status===s)).map(v=>`<tr><td>${esc(v.name)}</td><td>${esc(v.company)}</td><td>${esc(v.phone)}</td><td>${esc(v.host)}</td><td>${fmt(v.checkIn)}</td><td>${fmt(v.checkOut)}</td><td>${badge(v)}</td><td class="no-print text-nowrap">${v.status==='Checked In'?co(v):''} <button class="btn btn-sm btn-outline-secondary" title="Sync" onclick="syncToGoogleSheetSingle('${v.id}')"><i class="fa fa-table"></i></button></td></tr>`).join('')||empty(8)}
+function renderAll(){updateStats();renderTables()}
+function renderUsers(){$('userBody').innerHTML=users.map((u,i)=>`<tr><td>${esc(u.name)}</td><td>${esc(u.dept)}</td><td>${esc(u.email)}</td><td><span class="badge bg-dark">${esc(u.role)}</span></td><td class="text-end"><button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${i})"><i class="fa fa-trash"></i></button></td></tr>`).join('')}
+function addUser(){const n=$('uName').value.trim(),e=$('uEmail').value.trim();if(!n||!e)return alert('Name and email are required.');
+ if(users.some(u=>u.email.toLowerCase()===e.toLowerCase()))return alert('That email already exists.');
+ users.push({name:n,dept:$('uDept').value.trim(),email:e,role:$('uRole').value,pw:'welcome123'});saveAll();['uName','uDept','uEmail'].forEach(i=>$(i).value='');renderUsers();populateHosts()}
+function deleteUser(i){const u=users[i];if(u.email===me.email)return alert('You cannot delete the account you are signed in with.');
+ if(!confirm('Delete '+u.name+'?'))return;users.splice(i,1);saveAll();renderUsers();populateHosts()}
+
+/* badge */
+function showBadge(o){$('bName').textContent=o.name||'Visitor name';$('bCo').textContent=o.company||'Company';$('bHost').textContent=o.host||'—';
+ $('bTime').textContent=fmt(o.checkIn||new Date());$('bId').textContent=o.idNo?(o.idType+' '+o.idNo):(o.id||'—');
+ $('bPhoto').src=o.photo||'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="110" height="110"><rect width="110" height="110" fill="#eee"/><circle cx="55" cy="42" r="20" fill="#bbb"/><rect x="22" y="70" width="66" height="40" rx="20" fill="#bbb"/></svg>')}
+function liveBadge(){const g=i=>$(i).value.trim();showBadge({name:g('name'),company:g('company'),host:hostName(),idType:g('idType'),idNo:g('idNo'),photo})}
+function onPhoto(el){const f=el.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const s=Math.min(im.width,im.height);c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,160,160);photo=c.toDataURL('image/jpeg',.7);liveBadge()};im.src=r.result};r.readAsDataURL(f)}
+function printBadge(){document.body.classList.add('pb');window.print();setTimeout(()=>document.body.classList.remove('pb'),500)}
+
+/* check-in / out */
+async function submitCheckIn(e){e.preventDefault();const g=i=>$(i).value.trim();
+ const v={id:'V'+Date.now(),name:g('name'),company:g('company'),phone:g('phone'),email:g('email'),idType:g('idType'),idNo:g('idNo'),host:hostName(),hostEmail:g('hostEmail'),purpose:g('purpose'),photo,checkIn:new Date().toISOString(),checkOut:'',status:'Checked In'};
+ visitors.unshift(v);saveAll();showBadge(v);renderAll();$('ciForm').reset();photo='';
+ const m=settings.mode,useBE=(m==='backend'||m==='both')&&settings.backendUrl;let sent=false;
+ if(m==='simulate'||m==='both'||!useBE){const b=encodeURIComponent(`Hello ${v.host},\n\n${v.name}${v.company?' from '+v.company:''} (${v.phone}) has arrived to see you.\nPurpose: ${v.purpose}\nTime: ${fmt(v.checkIn)}\n\n${settings.company} Front Desk`);
+  window.open(`mailto:${v.hostEmail}?subject=${encodeURIComponent('Visitor arrived: '+v.name)}&body=${b}`,'_blank');setStat('emailStat','success','mailto opened')}
+ if(useBE){setStat('emailStat','primary','Sending…');try{sent=await sendBackend(v.hostEmail,v.host,v.name,v.company,v.phone,v.purpose,fmt(v.checkIn));setStat('emailStat',sent?'success':'danger',sent?'Email sent to host':'Backend rejected the request')}catch(x){setStat('emailStat','danger','Backend unreachable')}}
+ if(settings.autoSync==='yes')syncToGoogleSheetSingle(v.id);else setStat('sheetStat','muted','Auto sync is off')}
+async function sendBackend(hostEmail,hostName,visitorName,visitorCompany,visitorPhone,purpose,time){
+ const r=await fetch(settings.backendUrl.replace(/\/$/,'')+'/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hostEmail,hostName,visitorName,visitorCompany,visitorPhone,purpose,time})});return r.ok}
+function checkOutVisitor(id){const v=visitors.find(x=>x.id===id);if(!v)return;v.checkOut=new Date().toISOString();v.status='Checked Out';saveAll();renderAll();if(settings.autoSync==='yes')syncToGoogleSheetSingle(id,true)}
+
+/* export */
+const COLS=[['id','ID'],['name','Name'],['company','Company'],['phone','Phone'],['email','Email'],['idType','ID Type'],['idNo','ID Number'],['host','Host'],['hostEmail','Host Email'],['purpose','Purpose'],['checkIn','Check In'],['checkOut','Check Out'],['status','Status']];
+function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function exportCSV(rows=visitors,name='aceroyal_visitors'){const q=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
+ download(name+'_'+new Date().toISOString().slice(0,10)+'.csv','\ufeff'+[COLS.map(c=>q(c[1])).join(',')].concat(rows.map(v=>COLS.map(c=>q(v[c[0]])).join(','))).join('\r\n'),'text/csv;charset=utf-8')}
+function exportExcel(){exportCSV(visitors,'aceroyal_visitors_excel')}
+function exportPDF(){window.print()}
+function generateReport(){const f=$('rFrom').value,t=$('rTo').value,h=$('rHost').value;
+ repRows=visitors.filter(v=>{const d=v.checkIn.slice(0,10);return(!f||d>=f)&&(!t||d<=t)&&(!h||v.hostEmail===h)});
+ $('repTitle').textContent=`Report: ${repRows.length} visit(s)${f?' from '+f:''}${t?' to '+t:''}`;
+ $('repBody').innerHTML=repRows.map(v=>`<tr><td>${esc(v.name)}</td><td>${esc(v.company)}</td><td>${esc(v.host)}</td><td>${esc(v.purpose)}</td><td>${fmt(v.checkIn)}</td><td>${fmt(v.checkOut)}</td><td>${badge(v)}</td></tr>`).join('')||empty(7)}
+
+/* settings */
+const SK=Object.keys(DS);
+function loadSettings(){SK.forEach(k=>$('s_'+k).value=settings[k]);applyBrand()}
+function saveSettings(){SK.forEach(k=>settings[k]=$('s_'+k).value.trim?$('s_'+k).value.trim():$('s_'+k).value);saveAll();applyBrand();setStat('saveStat','success','Saved');setTimeout(()=>$('saveStat').textContent='',2500)}
+async function testEmail(){saveSettings();if(!settings.backendUrl)return setStat('testStat','danger','Enter a Backend URL first.');
+ setStat('testStat','primary','Sending…');try{const ok=await sendBackend(settings.frontEmail,'Front Desk','Test Visitor','ACEROYAL','0000000000','Test email from VMS',fmt(new Date()));setStat('testStat',ok?'success':'danger',ok?'Test email sent to '+settings.frontEmail:'Backend returned an error')}catch(e){setStat('testStat','danger','Cannot reach backend (is it awake and CORS enabled?)')}}
+
+/* google sheet */
+const sheetBody=v=>JSON.stringify({id:v.id,name:v.name,company:v.company,phone:v.phone,email:v.email,idType:v.idType,idNo:v.idNo,host:v.host,hostEmail:v.hostEmail,purpose:v.purpose,checkIn:v.checkIn,checkOut:v.checkOut,status:v.status});
+const post=b=>fetch(settings.sheetUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:b});
+async function syncToGoogleSheetSingle(id,quiet){const v=visitors.find(x=>x.id===id);if(!v)return;
+ if(!settings.sheetUrl){setStat('sheetStat','danger','No Sheet URL set');return alert('Add the Google Sheet URL in Settings first.')}
+ try{await post(sheetBody(v));setStat('sheetStat','success','Sent to Google Sheet')}catch(e){setStat('sheetStat','danger','Sync failed')}}
+async function syncToGoogleSheet(){if(!settings.sheetUrl)return alert('Add the Google Sheet URL in Settings first.');
+ let n=0;for(const v of [...visitors].reverse()){try{await post(sheetBody(v));n++}catch(e){}}alert(`Sent ${n} of ${visitors.length} visitor records to Google Sheet.`)}
+async function testSheet(){saveSettings();if(!settings.sheetUrl)return setStat('sheetTest','danger','Enter the URL first.');
+ try{await fetch(settings.sheetUrl,{mode:'no-cors'});setStat('sheetTest','success','Request sent. Check the sheet or open the URL to see "running".')}catch(e){setStat('sheetTest','danger','Cannot reach the URL')}}
+
+/* data */
+function clearAllData(){if(!confirm('Delete ALL visitor records on this device? Back up first.'))return;visitors=[];saveAll();renderAll()}
+function exportBackup(){download('aceroyal_vms_backup_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({visitors,users:users.map(({pw,...u})=>u),settings:{...settings,smtpPass:''}},null,2),'application/json')}
+
+applyBrand();liveBadge();if(me&&users.some(u=>u.email===me.email))startApp();
+</script></body></html>
