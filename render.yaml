@@ -16,3 +16,7 @@ services:
         sync: false
       - key: FROM_EMAIL
         sync: false
+      - key: FEEDBACK_ALERT_EMAIL
+        sync: false
+      - key: FEEDBACK_ALERT_MAX
+        value: "2"
